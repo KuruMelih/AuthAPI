@@ -65,7 +65,7 @@ Modern ve güvenli bir authentication API sistemi.
 
 1. **Repoyu klonlayın**
 bash
-git clone https://github.com/kurumelih/auth-api.git
+git clone https://github.com/kurumelih/AuthAPI.git
 cd auth-api
 
 2. **Bağımlılıkları yükleyin**
