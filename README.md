@@ -18,7 +18,6 @@ Modern ve güvenli bir authentication API sistemi.
 - [Başlangıç](#-başlangıç)
   - [Gereksinimler](#gereksinimler)
   - [Kurulum](#kurulum)
-- [Kullanım](#-kullanım)
 - [API Dokümantasyonu](#-api-dokümantasyonu)
 - [Güvenlik](#-güvenlik)
 - [Katkıda Bulunma](#-katkıda-bulunma)
