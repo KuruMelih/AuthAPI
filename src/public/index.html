@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Switch API Dokümantasyonu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .endpoint {
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .get {
+            background-color: #61affe;
+        }
+
+        .post {
+            background-color: #49cc90;
+        }
+
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .url {
+            color: #444;
+            font-family: monospace;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        .description {
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .response {
+            margin-top: 10px;
+        }
+
+        .header {
+            color: #666;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+
+        .required {
+            color: red;
+            font-size: 12px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Switch API Dokümantasyonu</h1>
+    <p>Base URL: <code>http://localhost:3000/api</code></p>
+
+    <h2>Authentication Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/auth/register</span>
+        <p class="description">Yeni kullanıcı kaydı oluşturur.</p>
+
+        <h4>Request Body:</h4>
+        <pre>
+{
+    "email": "test@example.com",     // Gerekli
+    "password": "123456test",        // Gerekli, min 6 karakter, en az 1 rakam
+    "username": "testuser"           // Gerekli, min 3 karakter
+}
+        </pre>
+
+        <h4>Response:</h4>
+        <pre>
+{
+    "status": "success",
+    "token": "jwt_token",
+    "data": {
+        "user": {
+            "email": "test@example.com",
+            "username": "testuser",
+            "isEmailVerified": false,
+            ...
+        }
+    }
+}
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/auth/login</span>
+        <p class="description">Kullanıcı girişi yapar. 5 başarısız denemeden sonra hesap 15 dakika kilitlenir.</p>
+
+        <h4>Request Body:</h4>
+        <pre>
+{
+    "email": "test@example.com",     // Gerekli
+    "password": "123456test"         // Gerekli
+}
+        </pre>
+
+        <h4>Response:</h4>
+        <pre>
+{
+    "status": "success",
+    "token": "jwt_token",
+    "data": {
+        "user": {
+            "email": "test@example.com",
+            "username": "testuser",
+            "isEmailVerified": false,
+            ...
+        },
+        "socialAccounts": {
+            "google": false,
+            "facebook": false
+        }
+    }
+}
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="url">/auth/google</span>
+        <p class="description">Google OAuth2.0 ile giriş/kayıt. Tarayıcıda açılmalıdır.</p>
+        <p class="description">Kullanıcı Google hesabıyla giriş yaptığında otomatik olarak email doğrulanır.</p>
+
+        <h4>Flow:</h4>
+        <ol>
+            <li>Kullanıcı Google giriş sayfasına yönlendirilir</li>
+            <li>Başarılı girişten sonra /auth/google/callback endpoint'ine yönlendirilir</li>
+            <li>JWT token ve kullanıcı bilgileri döner</li>
+        </ol>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/auth/send-verification-email</span>
+        <p class="description">Email doğrulama bağlantısı gönderir. Token 1 saat geçerlidir.</p>
+        <h4>Headers:</h4>
+        <div class="header">Authorization: Bearer jwt_token</div>
+        <h4>Response:</h4>
+        <pre>
+{
+    "status": "success",
+    "message": "Doğrulama emaili gönderildi"
+}
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/auth/forgot-password</span>
+        <p class="description">Şifre sıfırlama bağlantısı gönderir. Token 1 saat geçerlidir.</p>
+        <h4>Request Body:</h4>
+        <pre>
+{
+    "email": "test@example.com"      // Gerekli
+}
+        </pre>
+        <h4>Response:</h4>
+        <pre>
+{
+    "status": "success",
+    "message": "Şifre sıfırlama emaili gönderildi"
+}
+        </pre>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="url">/auth/reset-password/:token</span>
+        <p class="description">Yeni şifre belirler.</p>
+        <h4>URL Parameters:</h4>
+        <div class="tab">token: Email ile gelen şifre sıfırlama token'ı</div>
+        <h4>Request Body:</h4>
+        <pre>
+{
+    "password": "yeni123şifre"       // Gerekli, min 6 karakter, en az 1 rakam
+}
+        </pre>
+        <h4>Response:</h4>
+        <pre>
+{
+    "status": "success",
+    "message": "Şifre başarıyla değiştirildi"
+}
+        </pre>
+    </div>
+
+    <h2>Güvenlik Özellikleri</h2>
+    <ul>
+        <li>JWT token authentication</li>
+        <li>Password hashleme (bcrypt)</li>
+        <li>Rate limiting (15 dakikada 5 giriş denemesi)</li>
+        <li>Brute force koruması (5 başarısız denemeden sonra hesap kilitleme)</li>
+        <li>CORS koruması</li>
+        <li>Helmet güvenlik başlıkları</li>
+        <li>Email doğrulama sistemi</li>
+    </ul>
+
+    <h2>Hata Kodları</h2>
+    <pre>
+400 - Bad Request (Geçersiz istek)
+401 - Unauthorized (Giriş yapılmamış)
+403 - Forbidden (Yetkisiz erişim)
+404 - Not Found (Kaynak bulunamadı)
+423 - Locked (Hesap kilitli)
+429 - Too Many Requests (Çok fazla istek)
+500 - Internal Server Error (Sunucu hatası)
+    </pre>
+
+    <h2>Test Curl Komutları (Windows)</h2>
+    <pre>
+# Kayıt ol
+curl -X POST http://localhost:3000/api/auth/register -H "Content-Type: application/json" -d "{\"email\":\"test@example.com\",\"password\":\"123456test\",\"username\":\"testuser\"}"
+# Giriş yap
+curl -X POST http://localhost:3000/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"test@example.com\",\"password\":\"123456test\"}"
+# Email doğrulama gönder
+curl -X POST http://localhost:3000/api/auth/send-verification-email -H "Authorization: Bearer YOUR_TOKEN"
+# Şifre sıfırlama
+curl -X POST http://localhost:3000/api/auth/forgot-password -H "Content-Type: application/json" -d "{\"email\":\"test@example.com\"}"
+    </pre>
+
+</body>
+
+</html>
