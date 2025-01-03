@@ -13,9 +13,9 @@ Modern ve güvenli bir authentication API sistemi.
 
 ## 📋 İçindekiler
 
-- [Özellikler](#özellikler)
-- [Teknolojiler](#teknolojiler)
-- [Başlangıç](#başlangıç)
+- [Özellikler](#-özellikler)
+- [Teknolojiler](#-teknolojiler)
+- [Başlangıç](#-başlangıç)
   - [Gereksinimler](#gereksinimler)
   - [Kurulum](#kurulum)
 - [Kullanım](#kullanım)
